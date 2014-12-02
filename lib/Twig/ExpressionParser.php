@@ -374,7 +374,7 @@ class Twig_ExpressionParser
 
                 if ($stream->test(Twig_Token::PUNCTUATION_TYPE, '(')) {
                     $type = Twig_TemplateInterface::METHOD_CALL;
-                    foreach ($this->parseArguments() as $n) {
+                    foreach ($this->parseArguments(true) as $n) {
                         $arguments->addElement($n);
                     }
                 }

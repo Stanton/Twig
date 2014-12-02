@@ -79,12 +79,20 @@ class Twig_Node_For extends Twig_Node
         $this->loop->setAttribute('with_loop', $this->getAttribute('with_loop'));
         $this->loop->setAttribute('ifexpr', $this->getAttribute('ifexpr'));
 
+        $keyTarget = $this->getNode('key_target');
+
+        // working around Phalanger issue with foreach key => value by putting key assignment within loop
         $compiler
             ->write("foreach (\$context['_seq'] as ")
-            ->subcompile($this->getNode('key_target'))
-            ->raw(" => ")
             ->subcompile($this->getNode('value_target'))
             ->raw(") {\n")
+            ->write("\$_keys = array_keys(\$context['_seq'],")
+            ->subcompile($this->getNode('value_target'))
+            ->raw(",true);\n")
+            ->indent()
+            ->subcompile($this->getNode('key_target'))
+            ->raw(" = reset(\$_keys);\n")
+            ->write("unset(\$_keys);\n")
             ->indent()
             ->subcompile($this->getNode('body'))
             ->outdent()

@@ -293,7 +293,6 @@ class Twig_Lexer implements Twig_LexerInterface
 
     protected function lexRawData($tag)
     {
-        $codeSubstr = substr($this->code, $this->cursor);
         if (!preg_match(str_replace('%s', $tag, $this->regexes['lex_raw_data']), $this->code, $match, PREG_OFFSET_CAPTURE, $this->cursor)) {
             throw new Twig_Error_Syntax(sprintf('Unexpected end of file: Unclosed "%s" block', $tag), $this->lineno, $this->filename);
         }
@@ -315,7 +314,7 @@ class Twig_Lexer implements Twig_LexerInterface
             throw new Twig_Error_Syntax('Unclosed comment', $this->lineno, $this->filename);
         }
 
-        $this->moveCursor(substr($this->code, $this->cursor, $match[0][1] - $this->cursor).$match[0][0]);
+        $this->moveCursor(substr($codeSubstr, 0, $match[0][1]).$match[0][0]);
     }
 
     protected function lexString()
